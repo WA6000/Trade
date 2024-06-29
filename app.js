@@ -108,14 +108,19 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleInputType('exitPrice');
     updateCalculations();
 });
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register("/service-worker.js")
-            .then(registration => {
-                console.log('ServiceWorker registration successful with scope: ', registration.scope);
-            })
-            .catch(error => {
-                console.log('ServiceWorker registration failed: ', error);
-            });
-    });
+async function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        try {
+            const registration = await navigator.serviceWorker.register('/service-worker.js');
+            console.log('ServiceWorker registration successful with scope:', registration.scope);
+        } catch (error) {
+            console.log('ServiceWorker registration failed:', error);
+        }
+    } else {
+        console.log('Service workers are not supported.');
+    }
 }
+
+window.addEventListener('load', () => {
+    registerServiceWorker();
+});
