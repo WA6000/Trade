@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
             .then(registration => {
                 console.log('ServiceWorker registration successful with scope: ', registration.scope);
             })
