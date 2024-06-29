@@ -1,6 +1,5 @@
 const CACHE_NAME = 'trading-calculator-cache-v1';
 const urlsToCache = [
-    '/',
     '/index.html',
     '/styles.css',
     '/app.js',
