@@ -52,6 +52,7 @@ function updateCalculations() {
     const numShares = parseFloat(document.getElementById('numShares').value) || 1;
     const toggleInput = document.querySelector('.toggle-button.active').id;
     const usdToAed = 3.6639;
+    const aedToUsd = 3.6823;
 
     let exitPrice = 0;
     let percentageIncrease = 0;
@@ -81,9 +82,12 @@ function updateCalculations() {
     const exitValueUsd = exitPrice * numShares;
     const entryFeeUsd = Math.max(1, entryValueUsd * 0.0025);
     const exitFeeUsd = Math.max(1, exitValueUsd * 0.0025);
-    const profitUsd = exitValueUsd - entryValueUsd - entryFeeUsd - exitFeeUsd;
-    const profitAed = profitUsd * usdToAed;
-    const roi = entryValueUsd > 0 ? (profitUsd / entryValueUsd) * 100 : 0;
+
+    const aedRequiredForPurchase = (entryValueUsd + entryFeeUsd) * aedToUsd;
+    const aedAfterSelling = (exitValueUsd - exitFeeUsd) * usdToAed;
+
+    const profitAed = aedAfterSelling - aedRequiredForPurchase;
+    const roi = entryValueUsd > 0 ? (profitAed / aedRequiredForPurchase) * 100 : 0;
 
     // Format and display the results using currency formatters
     document.getElementById('entryValueUsd').textContent = usdFormatter.format(entryValueUsd);
@@ -94,7 +98,7 @@ function updateCalculations() {
     profitElement.textContent = aedFormatter.format(profitAed);
     roiElement.textContent = roi.toFixed(2) + '%';
     
-    if (profitUsd >= 0) {
+    if (profitAed >= 0) {
         profitElement.className = 'value profit';
         roiElement.className = 'value profit';
     } else {
@@ -108,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleInputType('exitPrice');
     updateCalculations();
 });
+
 async function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
         try {
