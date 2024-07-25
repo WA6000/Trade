@@ -1,52 +1,3 @@
-// app.js
-let lastCalculatedPercentage = 0;
-let lastCalculatedExitPrice = 0;
-
-// Create formatters for USD and AED
-const usdFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-});
-
-const aedFormatter = new Intl.NumberFormat('en-AE', {
-    style: 'currency',
-    currency: 'AED',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-});
-
-function toggleInputType(type) {
-    const percentageButton = document.getElementById('percentageButton');
-    const exitPriceButton = document.getElementById('exitPriceButton');
-    const percentageIncreaseInput = document.getElementById('percentageIncrease');
-    const percentageIncreaseLabel = document.getElementById('percentageIncreaseLabel');
-    const exitPriceInput = document.getElementById('exitPrice');
-    const exitPriceLabel = document.getElementById('exitPriceLabel');
-
-    if (type === 'percentage') {
-        percentageButton.classList.add('active');
-        exitPriceButton.classList.remove('active');
-        percentageIncreaseInput.style.display = 'block';
-        percentageIncreaseLabel.style.display = 'none';
-        exitPriceInput.style.display = 'none';
-        exitPriceLabel.style.display = 'block';
-        
-        percentageIncreaseInput.value = (lastCalculatedPercentage * 100).toFixed(2);
-    } else {
-        percentageButton.classList.remove('active');
-        exitPriceButton.classList.add('active');
-        percentageIncreaseInput.style.display = 'none';
-        percentageIncreaseLabel.style.display = 'block';
-        exitPriceInput.style.display = 'block';
-        exitPriceLabel.style.display = 'none';
-        
-        exitPriceInput.value = lastCalculatedExitPrice.toFixed(2);
-    }
-    updateCalculations();
-}
-
 function updateCalculations() {
     const entryPrice = parseFloat(document.getElementById('entryPrice').value) || 0;
     const numShares = parseFloat(document.getElementById('numShares').value) || 1;
@@ -106,26 +57,3 @@ function updateCalculations() {
         roiElement.className = 'value loss';
     }
 }
-
-// Initialize the calculations on page load
-document.addEventListener('DOMContentLoaded', () => {
-    toggleInputType('exitPrice');
-    updateCalculations();
-});
-
-async function registerServiceWorker() {
-    if ('serviceWorker' in navigator) {
-        try {
-            const registration = await navigator.serviceWorker.register('/service-worker.js');
-            console.log('ServiceWorker registration successful with scope:', registration.scope);
-        } catch (error) {
-            console.log('ServiceWorker registration failed:', error);
-        }
-    } else {
-        console.log('Service workers are not supported.');
-    }
-}
-
-window.addEventListener('load', () => {
-    registerServiceWorker();
-});
