@@ -1,21 +1,21 @@
 {
-    "name": "Trading Calculator",
-    "short_name": "TradingCalc",
-    "description": "A trading calculator for calculating profits considering exchange rates and transaction fees.",
-    "start_url": "./index.html",
-    "display": "standalone",
-    "background_color": "#f4f4f9",
-    "theme_color": "#007bff",
+    "short_name": "Sarwa Calc",
+    "name": "Sarwa Profit Calculator",
     "icons": [
-        {
-            "src": "chart.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "chart.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ]
-}
+      {
+        "src": "icons/icon-192x192.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      },
+      {
+        "src": "icons/icon-512x512.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ],
+    "start_url": "./index.html",
+    "background_color": "#ffffff",
+    "display": "standalone",
+    "scope": "./",
+    "theme_color": "#28a745"
+  }
