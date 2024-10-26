@@ -2,41 +2,117 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Sarwa Profit Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Theme Color for Chrome, Firefox OS, Opera and Vivaldi -->
+    <meta name="theme-color" content="#28a745">
+    <!-- Manifest -->
     <link rel="manifest" href="manifest.json">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="icons/icon-512x512.png">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            margin-top: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #333;
+        }
+        .calculator {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-custom {
+            background-color: #28a745;
+            color: #fff;
+        }
+        .btn-custom:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e9f7ef;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+        }
+        .result h2 {
+            color: #155724;
+        }
+        .result p {
+            color: #155724;
+            font-size: 1.1em;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #777;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .calculator {
+                margin: 20px;
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Trading Calculator</h1>
-        <div class="input-group">
-            <label for="numShares">Number of Shares:</label>
-            <input type="number" id="numShares" value="1" oninput="updateCalculations()">
+    <h1>Sarwa Profit Calculator</h1>
+    <div class="calculator">
+        <div class="form-group">
+            <label for="shares">Number of Shares:</label>
+            <input type="number" id="shares" class="form-control" placeholder="Enter number of shares" min="1" required>
         </div>
-        <div class="input-group">
+        <div class="form-group">
             <label for="entryPrice">Entry Price (USD):</label>
-            <input type="number" id="entryPrice" placeholder="Enter entry price" oninput="updateCalculations()">
+            <input type="number" id="entryPrice" class="form-control" placeholder="Enter entry price per share in USD" min="0.01" step="0.01" required>
         </div>
-        <div class="toggle-group">
-            <div id="exitPriceButton" class="toggle-button active" onclick="toggleInputType('exitPrice')">Exit Price (USD)</div>
-            <div id="percentageButton" class="toggle-button" onclick="toggleInputType('percentage')">Percentage Increase (%)</div>
-        </div>
-        <div class="input-group">
+        <div class="form-group">
             <label for="exitPrice">Exit Price (USD):</label>
-            <input type="number" id="exitPrice" placeholder="Enter exit price" oninput="updateCalculations()">
-            <span id="exitPriceLabel"></span>
+            <input type="number" id="exitPrice" class="form-control" placeholder="Enter exit price per share in USD" min="0.01" step="0.01" required>
         </div>
-        <div class="input-group">
-            <label for="percentageIncrease">Percentage Increase (%):</label>
-            <input type="number" id="percentageIncrease" placeholder="Enter percentage increase" oninput="updateCalculations()">
-            <span id="percentageIncreaseLabel"></span>
-        </div>
-        <div class="result">
-            <p>Entry Value (USD): <span id="entryValueUsd"></span></p>
-            <p>Profit (AED): <span id="profitAed" class="value"></span> ROI (%): <span id="roi" class="value"></span></p>
-        </div>
+        <button class="btn btn-custom btn-block" onclick="calculateProfit()">Calculate Profit</button>
+        <div class="result" id="result"></div>
     </div>
-    <script src="app.js"></script>
+
+    <div class="footer">
+        &copy; 2023 Sarwa Profit Calculator
+    </div>
+
+    <!-- Bootstrap JS and dependencies (Optional for Bootstrap JS components) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Include the JavaScript file -->
+    <script src="script.js"></script>
+
+    <!-- Register the Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('service-worker.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
 </body>
 </html>
