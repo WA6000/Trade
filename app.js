@@ -1,59 +1,55 @@
-function updateCalculations() {
-    const entryPrice = parseFloat(document.getElementById('entryPrice').value) || 0;
-    const numShares = parseFloat(document.getElementById('numShares').value) || 1;
-    const toggleInput = document.querySelector('.toggle-button.active').id;
-    const usdToAed = 3.6639;
-    const aedToUsd = 3.6823;
+function calculateProfit() {
+    // Retrieve input values
+    const shares = parseFloat(document.getElementById('shares').value);
+    const entryPrice = parseFloat(document.getElementById('entryPrice').value);
+    const exitPrice = parseFloat(document.getElementById('exitPrice').value);
+    const resultDiv = document.getElementById('result');
 
-    let exitPrice = 0;
-    let percentageIncrease = 0;
-
-    if (toggleInput === 'percentageButton') {
-        percentageIncrease = parseFloat(document.getElementById('percentageIncrease').value) / 100 || 0;
-        exitPrice = entryPrice * (1 + percentageIncrease);
-        document.getElementById('exitPriceLabel').textContent = exitPrice.toFixed(2);
-        
-        lastCalculatedPercentage = percentageIncrease;
-        lastCalculatedExitPrice = exitPrice;
-    } else {
-        exitPrice = parseFloat(document.getElementById('exitPrice').value) || 0;
-        if (entryPrice > 0) {
-            percentageIncrease = (exitPrice / entryPrice - 1);
-            document.getElementById('percentageIncreaseLabel').textContent = (percentageIncrease * 100).toFixed(2) + '%';
-        } else {
-            percentageIncrease = 0;
-            document.getElementById('percentageIncreaseLabel').textContent = 'N/A';
-        }
-        
-        lastCalculatedPercentage = percentageIncrease;
-        lastCalculatedExitPrice = exitPrice;
+    // Validate inputs
+    if (isNaN(shares) || isNaN(entryPrice) || isNaN(exitPrice) || shares <= 0 || entryPrice <= 0 || exitPrice <= 0) {
+        resultDiv.innerHTML = `<p style="color: red;">Please enter valid numbers greater than zero.</p>`;
+        return;
     }
 
-    const entryValueUsd = entryPrice * numShares;
-    const exitValueUsd = exitPrice * numShares;
-    const entryFeeUsd = Math.max(1, entryValueUsd * 0.0025);
-    const exitFeeUsd = Math.max(1, exitValueUsd * 0.0025);
+    // Constants for conversion rates and fees
+    const conversionRateIn = 3.6823;   // AED to USD when buying
+    const conversionRateOut = 3.6639;  // AED to USD when selling
+    const feeRate = 0.0025;            // 0.25%
+    const minFee = 1.00;               // Minimum fee of $1
 
-    const aedRequiredForPurchase = (entryValueUsd + entryFeeUsd) * aedToUsd;
-    const aedAfterSelling = (exitValueUsd - exitFeeUsd) * usdToAed;
+    // Calculate total cost in USD when buying
+    const totalEntryUSD = shares * entryPrice;
+    const calculatedEntryFeeUSD = totalEntryUSD * feeRate;
+    const entryFeeUSD = Math.max(calculatedEntryFeeUSD, minFee);
+    const totalEntryUSDWithFee = totalEntryUSD + entryFeeUSD;
 
-    const profitAed = aedAfterSelling - aedRequiredForPurchase;
-    const roi = entryValueUsd > 0 ? (profitAed / aedRequiredForPurchase) * 100 : 0;
+    // Convert total cost to AED when buying
+    const totalEntryAED = totalEntryUSDWithFee * conversionRateIn;
 
-    // Format and display the results using currency formatters
-    document.getElementById('entryValueUsd').textContent = usdFormatter.format(entryValueUsd);
-    
-    const profitElement = document.getElementById('profitAed');
-    const roiElement = document.getElementById('roi');
-    
-    profitElement.textContent = aedFormatter.format(profitAed);
-    roiElement.textContent = roi.toFixed(2) + '%';
-    
-    if (profitAed >= 0) {
-        profitElement.className = 'value profit';
-        roiElement.className = 'value profit';
-    } else {
-        profitElement.className = 'value loss';
-        roiElement.className = 'value loss';
+    // Calculate total proceeds in USD when selling
+    const totalExitUSD = shares * exitPrice;
+    const calculatedExitFeeUSD = totalExitUSD * feeRate;
+    const exitFeeUSD = Math.max(calculatedExitFeeUSD, minFee);
+    const totalExitUSDWithFee = totalExitUSD - exitFeeUSD;
+
+    // Convert total proceeds to AED when selling
+    const totalExitAED = totalExitUSDWithFee * conversionRateOut;
+
+    // Calculate net profit in AED
+    const netProfitAED = totalExitAED - totalEntryAED;
+
+    // Format currency
+    function formatCurrency(value, currency = 'AED') {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency }).format(value);
     }
+
+    // Display results
+    resultDiv.innerHTML = `
+        <h2>Profit Summary</h2>
+        <p><strong>Total Investment (${formatCurrency(0).replace(/\d/g, '').trim()}):</strong> ${formatCurrency(totalEntryAED)}</p>
+        <p><strong>Entry Fee (USD):</strong> ${formatCurrency(entryFeeUSD, 'USD')}</p>
+        <p><strong>Total Returns (${formatCurrency(0).replace(/\d/g, '').trim()}):</strong> ${formatCurrency(totalExitAED)}</p>
+        <p><strong>Exit Fee (USD):</strong> ${formatCurrency(exitFeeUSD, 'USD')}</p>
+        <p><strong>Net Profit (${formatCurrency(0).replace(/\d/g, '').trim()}):</strong> ${formatCurrency(netProfitAED)}</p>
+    `;
 }
